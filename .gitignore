@@ -3,19 +3,19 @@
 bin/
 obj/
 
-# Cấu hình ứng dụng (tránh lưu thông tin nhạy cảm)
+# Appsetting files
 appsettings.json
 appsettings.Development.json
 
-# Cấu hình môi trường của Azure
+# Configuration of Azure
 .azure/
 
-# Thư mục cấu hình của IDE
+# Configuration of IDE
 .vscode/
 .idea/
 *.sln.dotSettings
 *.user
 
-# Hệ điều hành
+# OS
 .DS_Store
 Thumbs.db
