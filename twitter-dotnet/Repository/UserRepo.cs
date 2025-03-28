@@ -4,11 +4,12 @@ using Dapper;
 using DotnetAPI.Data;
 using DotnetAPI.Dtos;
 using DotnetAPI.Models;
+using DotnetAPI.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetAPI.Repository
 {
-    public class UserRepo
+    public class UserRepo : IUserRepo
     {
         private readonly DataContextDapper _dapper;
         public UserRepo(IConfiguration config)
@@ -40,6 +41,14 @@ namespace DotnetAPI.Repository
             IEnumerable<User> users = _dapper.LoadDataWithParameters<User>(sql, sqlParameters);
             return users;
         }
+        public IEnumerable<User> GetUserProfile(int userId)
+        {
+            string sql = @"EXEC TutorialAppSchema.spUsers_Get @UserId=@UserIdParameter";
+            DynamicParameters sqlParameters = new DynamicParameters();
+            sqlParameters.Add("@UserIdParameter", userId, DbType.Int32);
+
+            return _dapper.LoadDataWithParameters<User>(sql, sqlParameters);
+        }
         public bool UpsertUser(User user)
         {
             string sql = @"EXEC TutorialAppSchema.spUser_Upsert
@@ -64,6 +73,16 @@ namespace DotnetAPI.Repository
             sqlParameters.Add("@DepartmentParameter", user.Department, DbType.String);
             sqlParameters.Add("@SalaryParameter", user.Salary, DbType.Decimal);
             sqlParameters.Add("@UserIdParameter", user.UserId, DbType.Int32);
+
+            return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
+        }
+        public bool DeleteUser(int userId)
+        {
+            string sql = @"TutorialAppSchema.spUser_Delete
+                @UserId = @UserIdParameter";
+
+            DynamicParameters sqlParameters = new DynamicParameters();
+            sqlParameters.Add("@UserIdParameter", userId, DbType.Int32);
 
             return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
         }
