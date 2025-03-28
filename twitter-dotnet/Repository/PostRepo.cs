@@ -4,12 +4,13 @@ using Dapper;
 using DotnetAPI.Data;
 using DotnetAPI.Dtos;
 using DotnetAPI.Models;
+using DotnetAPI.Repository.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetAPI.Repository
 {
-    public class PostRepo
+    public class PostRepo : IPostRepo
     {
         private readonly DataContextDapper _dapper;
         private readonly IMapper _mapper;
@@ -50,18 +51,6 @@ namespace DotnetAPI.Repository
 
             return _dapper.LoadDataWithParameters<Post>(sql, sqlParameters);
         }
-        public bool DeletePost(int postId, int userId)
-        {
-            string sql = @"EXEC TutorialAppSchema.spPost_Delete 
-                @UserId=@UserIdParameter, 
-                @PostId=@PostIdParameter";
-
-            DynamicParameters sqlParameters = new DynamicParameters();
-            sqlParameters.Add("@UserIdParameter", userId, DbType.Int32);
-            sqlParameters.Add("@PostIdParameter", postId, DbType.Int32);
-
-            return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
-        }
         public IEnumerable<Post> GetMyPosts(int userId)
         {
             string sql = @"EXEC TutorialAppSchema.spPosts_Get @UserId=@UserIdParameter";
@@ -90,6 +79,18 @@ namespace DotnetAPI.Repository
             }
             return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
             throw new Exception("Failed to upsert post!");
+        }
+        public bool DeletePost(int postId, int userId)
+        {
+            string sql = @"EXEC TutorialAppSchema.spPost_Delete 
+                @UserId=@UserIdParameter, 
+                @PostId=@PostIdParameter";
+
+            DynamicParameters sqlParameters = new DynamicParameters();
+            sqlParameters.Add("@UserIdParameter", userId, DbType.Int32);
+            sqlParameters.Add("@PostIdParameter", postId, DbType.Int32);
+
+            return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
         }
     }
 }
