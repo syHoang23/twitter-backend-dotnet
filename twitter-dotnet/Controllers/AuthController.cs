@@ -21,22 +21,13 @@ namespace DotnetAPI.Controllers
     [Authorize]
     public class AuthController : BaseApiController
     {
-        private readonly DataContextDapper _dapper;
         private readonly AuthHelper _authHelper;
-        private readonly UserRepo _userRepo;
         private readonly AuthRepo _authRepo;
-        private readonly IMapper _mapper;
 
         public AuthController(IConfiguration config)
         {
-            _dapper = new DataContextDapper(config);
             _authHelper = new AuthHelper(config);
-            _userRepo = new UserRepo(config);
             _authRepo = new AuthRepo(config);
-            _mapper = new Mapper(new MapperConfiguration(cfg => 
-            {
-                cfg.CreateMap<UserForRegistrationDto, User>().ReverseMap();
-            }));
         }
 
         [AllowAnonymous]
@@ -53,7 +44,7 @@ namespace DotnetAPI.Controllers
         [HttpPut("ResetPassword")]
         public IActionResult ResetPassword(UserForLoginDto userForSetPassword)
         {
-            if (_authHelper.SetPassword(userForSetPassword))
+            if (_authRepo.ResetPassword(userForSetPassword))
             {
                 return Ok();
             }
@@ -70,14 +61,12 @@ namespace DotnetAPI.Controllers
         [HttpGet("RefreshToken")]
         public string RefreshToken()
         {
-            string userIdSql = @"
-                SELECT UserId FROM TutorialAppSchema.Users WHERE UserId = '" +
-                User.FindFirst("userId")?.Value + "'";
-            
-            int userId = _dapper.LoadDataSingle<int>(userIdSql);
-
-            return _authHelper.CreateToken(userId);
+            var userIdStr = this.User.FindFirst("userId")?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+            {
+                throw new UnauthorizedAccessException("Invalid or missing user ID.");
+            }
+            return _authRepo.RefreshToken(userId);
         }
-
     }
 }
