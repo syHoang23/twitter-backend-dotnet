@@ -19,19 +19,23 @@ public class UserController : BaseApiController
         _dapper = new DataContextDapper(config);
         _userRepo = new UserRepo(config);
     }
-    [AllowAnonymous]
-    [HttpGet("TestConnection")]
-    public DateTime TestConnection()
-    {
-        return _dapper.LoadDataSingle<DateTime>("SELECT GETDATE()");
-    }
-
     [HttpGet("GetUsers/{userId}/{isActive}")]
     public IEnumerable<User> GetUsers(int userId, bool isActive)
     {
         return _userRepo.GetUsers(userId, isActive);
+
+        throw new Exception("Failed to Get Users");
     }
-    
+    [HttpPut("MyProfile")]
+    public IEnumerable<User> GetUserProfile()
+    {
+        var userIdStr = this.User.FindFirst("userId")?.Value;
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+        {
+            throw new UnauthorizedAccessException("Invalid or missing user ID.");
+        }
+        return _userRepo.GetUserProfile(userId);
+    }
     [HttpPut("UpsertUser")]
     public IActionResult UpsertUser(User user)
     {   
@@ -45,13 +49,7 @@ public class UserController : BaseApiController
     [HttpDelete("DeleteUser/{userId}")]
     public IActionResult DeleteUser(int userId)
     {
-        string sql = @"TutorialAppSchema.spUser_Delete
-            @UserId = @UserIdParameter";
-
-        DynamicParameters sqlParameters = new DynamicParameters();
-        sqlParameters.Add("@UserIdParameter", userId, DbType.Int32);
-
-        if (_dapper.ExecuteSqlWithParameters(sql, sqlParameters))
+        if (_userRepo.DeleteUser(userId))
         {
             return Ok();
         } 
