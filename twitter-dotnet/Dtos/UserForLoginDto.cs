@@ -8,10 +8,13 @@ namespace DotnetAPI.Dtos
         [EmailAddress(ErrorMessage = "Email không hợp lệ.")]    
         public string? Email {get; set;}
         [Required]
-        public string? Password {get; set;}
+        public string Password {get; set;}
         public UserForLoginDto()
         {
-            
+            if(string.IsNullOrEmpty(Password))
+            {
+                Password = string.Empty;
+            }
         }
     }
 }

@@ -9,7 +9,7 @@ namespace DotnetAPI.Dtos
         
         [Required]
         [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự.")]
-        public string? Password {get; set;}
+        public string Password {get; set;}
         [Required]
         [Compare("Password", ErrorMessage = "Xác nhận mật khẩu không khớp.")]
         public string? PasswordConfirm {get; set;}
@@ -29,7 +29,10 @@ namespace DotnetAPI.Dtos
 
         public UserForRegistrationDto()
         {
-
+            if(string.IsNullOrEmpty(Password))
+            {
+                Password = string.Empty;
+            }
         }
     }
 }
