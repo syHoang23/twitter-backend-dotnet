@@ -21,12 +21,10 @@ namespace DotnetAPI.Controllers
     [Authorize]
     public class AuthController : BaseApiController
     {
-        private readonly AuthHelper _authHelper;
         private readonly AuthRepo _authRepo;
 
         public AuthController(IConfiguration config)
         {
-            _authHelper = new AuthHelper(config);
             _authRepo = new AuthRepo(config);
         }
 
@@ -56,6 +54,7 @@ namespace DotnetAPI.Controllers
         public IActionResult Login(UserForLoginDto userForLogin)
         {
             return Ok(_authRepo.Login(userForLogin));
+            throw new Exception("Failed to login!");
         }
 
         [HttpGet("RefreshToken")]
@@ -67,6 +66,7 @@ namespace DotnetAPI.Controllers
                 throw new UnauthorizedAccessException("Invalid or missing user ID.");
             }
             return _authRepo.RefreshToken(userId);
+            throw new Exception("Failed to reset password!");
         }
     }
 }
