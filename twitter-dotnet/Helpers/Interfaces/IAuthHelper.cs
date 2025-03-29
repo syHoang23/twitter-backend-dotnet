@@ -7,5 +7,6 @@ namespace DotnetAPI.Helpers.Interfaces
     {
         byte[] GetPasswordHash(string password, byte[] passwordSalt);
         string CreateToken(int userId);
+        public bool CheckUserExists(string email);
     }
 }
