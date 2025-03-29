@@ -32,17 +32,13 @@ namespace DotnetAPI.Repository
         {
             if (userForRegistration.Password == userForRegistration.PasswordConfirm)
             {
-                string sqlCheckUserExists = "SELECT Email FROM TutorialAppSchema.Auth WHERE Email = '" +
-                    userForRegistration.Email + "'";
-
-                IEnumerable<string> existingUsers = _dapper.LoadData<string>(sqlCheckUserExists);
-                if (existingUsers.Count() == 0)
+                if (_authHelper.CheckUserExists(userForRegistration.Email))
                 {
                     UserForLoginDto userForSetPassword = new UserForLoginDto() {
                         Email = userForRegistration.Email,
                         Password = userForRegistration.Password
                     };
-                    if (_authHelper.SetPassword(userForSetPassword))
+                    if (ResetPassword(userForSetPassword))
                     {
                         User user = _mapper.Map<User>(userForRegistration);
                         user.Active = true;
@@ -79,11 +75,6 @@ namespace DotnetAPI.Repository
                 @PasswordSalt = @PasswordSaltParam";
             
             DynamicParameters sqlParameters = new DynamicParameters();
-
-            // SqlParameter emailParameter = new SqlParameter("@EmailParam", SqlDbType.VarChar);
-            // emailParameter.Value = userForLogin.Email;
-            // sqlParameters.Add(emailParameter);
-
             sqlParameters.Add("@EmailParam", userForSetPassword.Email, DbType.String);
             sqlParameters.Add("@PasswordHashParam", passwordHash, DbType.Binary);
             sqlParameters.Add("@PasswordSaltParam", passwordSalt, DbType.Binary);
