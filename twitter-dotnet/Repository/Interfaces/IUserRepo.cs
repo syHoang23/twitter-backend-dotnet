@@ -1,5 +1,4 @@
 using DotnetAPI.Models;
-using DotnetAPI.Dtos;
 namespace DotnetAPI.Repository.Interfaces
 {
     public interface IUserRepo
@@ -8,6 +7,5 @@ namespace DotnetAPI.Repository.Interfaces
         IEnumerable<User> GetUserProfile(int userId);
         bool UpsertUser(User user);
         bool DeleteUser(int userId);
-
     }
 }

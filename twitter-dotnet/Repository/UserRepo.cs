@@ -5,7 +5,6 @@ using DotnetAPI.Data;
 using DotnetAPI.Dtos;
 using DotnetAPI.Models;
 using DotnetAPI.Repository.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetAPI.Repository
 {

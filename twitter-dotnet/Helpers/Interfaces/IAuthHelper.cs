@@ -1,6 +1,3 @@
-using DotnetAPI.Data;
-using DotnetAPI.Dtos;
-
 namespace DotnetAPI.Helpers.Interfaces
 {
     public interface IAuthHelper

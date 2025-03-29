@@ -1,5 +1,4 @@
 using DotnetAPI.Dtos;
-using DotnetAPI.Models;
 
 namespace DotnetAPI.Repository.Interfaces
 {
