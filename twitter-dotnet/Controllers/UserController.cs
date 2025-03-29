@@ -1,7 +1,3 @@
-using System.Data;
-using Dapper;
-using DotnetAPI.Data;
-using DotnetAPI.Dtos;
 using DotnetAPI.Repository;
 using DotnetAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -12,11 +8,9 @@ namespace DotnetAPI.Controllers;
 [Authorize]
 public class UserController : BaseApiController
 {
-    private readonly DataContextDapper _dapper;
     private readonly UserRepo _userRepo;
     public UserController(IConfiguration config)
     {
-        _dapper = new DataContextDapper(config);
         _userRepo = new UserRepo(config);
     }
     [HttpGet("GetUsers/{userId}/{isActive}")]

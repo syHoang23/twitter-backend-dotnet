@@ -1,7 +1,3 @@
-using System.Data;
-using AutoMapper;
-using Dapper;
-using DotnetAPI.Data;
 using DotnetAPI.Dtos;
 using DotnetAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,16 +9,9 @@ namespace DotnetAPI.Controllers
     [Authorize]
     public class PostController : BaseApiController
     {
-        private readonly DataContextDapper _dapper;
-        private readonly IMapper _mapper;
         private readonly PostRepo _postRepo;
         public PostController(IConfiguration config)
         {
-            _dapper = new DataContextDapper(config);
-            _mapper = new Mapper(new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<PostForUpsertDto, Post>().ReverseMap();
-            }));
             _postRepo = new PostRepo(config);
         }
 
