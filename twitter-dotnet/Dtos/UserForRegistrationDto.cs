@@ -5,7 +5,7 @@ namespace DotnetAPI.Dtos
     {
         [Required]
         [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
-        public string? Email {get; set;}
+        public string Email {get; set;}
         
         [Required]
         [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự.")]
@@ -29,6 +29,10 @@ namespace DotnetAPI.Dtos
 
         public UserForRegistrationDto()
         {
+            if(string.IsNullOrEmpty(Email))
+            {
+                Email = string.Empty;
+            }
             if(string.IsNullOrEmpty(Password))
             {
                 Password = string.Empty;
