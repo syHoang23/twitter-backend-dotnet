@@ -3,16 +3,17 @@ using DotnetAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DotnetAPI.Repository;
+using DotnetAPI.Repository.Interfaces;
 
 namespace DotnetAPI.Controllers
 {
     [Authorize]
     public class PostController : BaseApiController
     {
-        private readonly PostRepo _postRepo;
-        public PostController(IConfiguration config)
+        private readonly IPostRepo _postRepo;
+        public PostController(IPostRepo postRepo)
         {
-            _postRepo = new PostRepo(config);
+            _postRepo = postRepo;
         }
 
         [HttpGet("Posts/{postId}/{userId}/{searchParam}")]

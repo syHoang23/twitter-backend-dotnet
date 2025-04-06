@@ -1,18 +1,21 @@
+using DotnetAPI.Models;
+using DotnetAPI.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DotnetAPI.Controllers
 {
     public class TestController : BaseApiController
     {
-
-        public TestController(IConfiguration config)
+        private readonly IPostRepo _postRepo;
+        public TestController(IPostRepo postRepo)
         {
+		    _postRepo = postRepo;
         }
 
-        [HttpGet]
-        public string Test()
+        [HttpGet("Posts/{postId}/{userId}/{searchParam}")]
+        public IEnumerable<Post> GetPosts(int postId = 0, int userId = 0, string searchParam = "None")
         {
-            return "Hello World!";
+            return _postRepo.GetPosts(postId, userId, searchParam);
         }
 
     }

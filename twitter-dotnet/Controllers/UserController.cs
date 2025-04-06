@@ -2,16 +2,17 @@ using DotnetAPI.Repository;
 using DotnetAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DotnetAPI.Repository.Interfaces;
 
 namespace DotnetAPI.Controllers;
 
 [Authorize]
 public class UserController : BaseApiController
 {
-    private readonly UserRepo _userRepo;
-    public UserController(IConfiguration config)
+    private readonly IUserRepo _userRepo;
+    public UserController(IUserRepo userRepo)
     {
-        _userRepo = new UserRepo(config);
+        _userRepo = userRepo;
     }
     [HttpGet("GetUsers/{userId}/{isActive}")]
     public IEnumerable<User> GetUsers(int userId, bool isActive)

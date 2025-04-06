@@ -1,5 +1,6 @@
 using DotnetAPI.Dtos;
 using DotnetAPI.Repository;
+using DotnetAPI.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,10 @@ namespace DotnetAPI.Controllers
     [Authorize]
     public class AuthController : BaseApiController
     {
-        private readonly AuthRepo _authRepo;
-
-        public AuthController(IConfiguration config)
+        private readonly IAuthRepo _authRepo;
+        public AuthController(IAuthRepo authRepo)
         {
-            _authRepo = new AuthRepo(config);
+            _authRepo = authRepo;
         }
 
         [AllowAnonymous]
