@@ -4,13 +4,12 @@ using System.Security.Claims;
 using System.Text;
 using Dapper;
 using DotnetAPI.Data;
-using DotnetAPI.Helpers.Interfaces;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DotnetAPI.Helpers
 {
-    public class AuthHelper : IAuthHelper
+    public class AuthHelper
     {
         private readonly IConfiguration _config;
         private readonly DataContextDapper _dapper;
