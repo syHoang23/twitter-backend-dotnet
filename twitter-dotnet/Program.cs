@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen(c =>
         {
             Name = "Phạm Văn Sỹ Hoàng",
             Email = "phamvansyhoang1903.ktpm@gmail.com",
-            Url = new Uri("https://yourwebsite.com")
+            Url = new Uri("https://www.linkedin.com/in/phamvansyhoang")
         }
     });
 
