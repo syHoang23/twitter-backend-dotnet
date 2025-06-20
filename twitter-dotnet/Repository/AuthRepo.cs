@@ -37,7 +37,7 @@ namespace DotnetAPI.Repository
                         Email = userForRegistration.Email,
                         Password = userForRegistration.Password
                     };
-                    if (ResetPassword(userForSetPassword))
+                    if (CreatePassword(userForSetPassword))
                     {
                         User user = _mapper.Map<User>(userForRegistration);
                         user.Active = true;
@@ -52,7 +52,7 @@ namespace DotnetAPI.Repository
             }
             throw new Exception("Passwords do not match!");
         }
-        public bool ResetPassword(UserForLoginDto userForSetPassword)
+        public bool CreatePassword(UserForLoginDto userForSetPassword)
         {
             
             byte[] passwordSalt = new byte[128 / 8];
@@ -80,7 +80,35 @@ namespace DotnetAPI.Repository
 
             return _dapper.ExecuteSqlWithParameters(sqlAddAuth, sqlParameters);
         }
-        public Dictionary<string,string> Login(UserForLoginDto userForLogin)
+        public bool ResetPassword(int userId, string password)
+        {
+            
+            byte[] passwordSalt = new byte[128 / 8];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetNonZeroBytes(passwordSalt);
+            }
+
+            byte[] passwordHash = _authHelper.GetPasswordHash(password, passwordSalt);
+
+            Console.WriteLine("0x" + BitConverter.ToString(passwordHash).Replace("-",""));
+            Console.WriteLine(System.Text.Encoding.UTF8.GetString(passwordHash, 0, passwordHash.Length));
+            Console.WriteLine(System.Text.Encoding.UTF8.GetString(passwordHash));
+            Console.WriteLine(Convert.ToBase64String(passwordHash));
+
+            string sqlResetPassword = @"EXEC TutorialAppSchema.spPassword_Reset
+                @UserId = @UserIdParam,
+                @PasswordHash = @PasswordHashParam,
+                @PasswordSalt = @PasswordSaltParam";
+            
+            DynamicParameters sqlParameters = new DynamicParameters();
+            sqlParameters.Add("@UserIdParam", userId, DbType.Int32);
+            sqlParameters.Add("@PasswordHashParam", passwordHash, DbType.Binary);
+            sqlParameters.Add("@PasswordSaltParam", passwordSalt, DbType.Binary);
+
+            return _dapper.ExecuteSqlWithParameters(sqlResetPassword, sqlParameters);
+        }
+        public Dictionary<string, string> Login(UserForLoginDto userForLogin)
         {
             string sqlForHashAndSalt = @"EXEC TutorialAppSchema.spLoginConfirmation_Get 
                 @Email = @EmailParam";
@@ -103,7 +131,8 @@ namespace DotnetAPI.Repository
 
             for (int index = 0; index < passwordHash.Length; index++)
             {
-                if (passwordHash[index] != userForConfirmation.PasswordHash[index]){
+                if (passwordHash[index] != userForConfirmation.PasswordHash[index])
+                {
                     throw new UnauthorizedAccessException("Incorrect password!");
                 }
             }
@@ -117,7 +146,7 @@ namespace DotnetAPI.Repository
             Dictionary<string, string> token = new Dictionary<string, string> {
                 {"token", _authHelper.CreateToken(userId)}
             };
-            
+
             return token;
         }
         public string RefreshToken(int userIdParam)
