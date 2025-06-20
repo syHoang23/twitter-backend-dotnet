@@ -19,7 +19,12 @@ namespace DotnetAPI.Controllers
         [HttpGet("Posts/{postId}/{userId}/{searchParam}")]
         public IEnumerable<Post> GetPosts(int postId = 0, int userId = 0, string searchParam = "None")
         {
-            return _postRepo.GetPosts(postId, userId, searchParam);
+            var posts = _postRepo.GetPosts(postId, userId, searchParam);
+            if (posts == null)
+            {
+                throw new Exception("Failed to Get Posts");
+            }
+            return posts;
         }
 
         [HttpGet("MyPosts")]
