@@ -15,7 +15,7 @@ namespace DotnetAPI.Repository
         {
             _dapper = new DataContextDapper(config);
         }
-        public IEnumerable<User> GetUsers(int userId, bool isActive)
+        public IEnumerable<User> GetUsers(int userId = 0, bool isActive = false)
         {
             string sql = @"EXEC TutorialAppSchema.spUsers_Get";
             string stringParameters = "";
