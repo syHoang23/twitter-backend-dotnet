@@ -75,6 +75,33 @@ namespace DotnetAPI.Repository
 
             return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
         }
+        public bool UpdatetUser(int userId, UserForUpdateDto userForUpdate)
+        {
+            string sql = @"EXEC TutorialAppSchema.spUser_Upsert
+                @FirstName = @FirstNameParameter, 
+                @LastName = @LastNameParameter, 
+                @Email = @EmailParameter, 
+                @Gender = @GenderParameter, 
+                @Active = @ActiveParameter, 
+                @JobTitle = @JobTitleParameter, 
+                @Department = @DepartmentParameter,
+                @Salary = @SalaryParameter, 
+                @UserId = @UserIdParameter";
+
+            DynamicParameters sqlParameters = new DynamicParameters();
+
+            sqlParameters.Add("@FirstNameParameter", userForUpdate.FirstName, DbType.String);
+            sqlParameters.Add("@LastNameParameter", userForUpdate.LastName, DbType.String);
+            sqlParameters.Add("@EmailParameter", userForUpdate.Email, DbType.String);
+            sqlParameters.Add("@GenderParameter", userForUpdate.Gender, DbType.String);
+            sqlParameters.Add("@ActiveParameter", userForUpdate.Active, DbType.Boolean);
+            sqlParameters.Add("@JobTitleParameter", userForUpdate.JobTitle, DbType.String);
+            sqlParameters.Add("@DepartmentParameter", userForUpdate.Department, DbType.String);
+            sqlParameters.Add("@SalaryParameter", userForUpdate.Salary, DbType.Decimal);
+            sqlParameters.Add("@UserIdParameter", userId, DbType.Int32);
+
+            return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
+        }
         public bool DeleteUser(int userId)
         {
             string sql = @"TutorialAppSchema.spUser_Delete
