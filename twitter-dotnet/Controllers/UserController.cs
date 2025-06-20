@@ -15,11 +15,14 @@ public class UserController : BaseApiController
         _userRepo = userRepo;
     }
     [HttpGet("GetUsers/{userId}/{isActive}")]
-    public IEnumerable<User> GetUsers(int userId, bool isActive)
+    public IEnumerable<User> GetUsers(int userId = 0, bool isActive = false)
     {
-        return _userRepo.GetUsers(userId, isActive);
-
-        throw new Exception("Failed to Get Users");
+        var users = _userRepo.GetUsers(userId, isActive);
+        if (users == null)
+        {
+            throw new Exception("Failed to Get Users");
+        }
+        return users;
     }
     [HttpPut("MyProfile")]
     public IEnumerable<User> GetUserProfile()
