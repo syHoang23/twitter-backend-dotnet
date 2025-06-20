@@ -27,9 +27,14 @@ namespace DotnetAPI.Controllers
         }
 
         [HttpPut("ResetPassword")]
-        public IActionResult ResetPassword(UserForLoginDto userForSetPassword)
+        public IActionResult ResetPassword(string password)
         {
-            if (_authRepo.ResetPassword(userForSetPassword))
+            var userIdStr = this.User.FindFirst("userId")?.Value;
+            if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+            {
+                throw new UnauthorizedAccessException("Invalid or missing user ID.");
+            }
+            if (_authRepo.ResetPassword(userId, password))
             {
                 return Ok();
             }
