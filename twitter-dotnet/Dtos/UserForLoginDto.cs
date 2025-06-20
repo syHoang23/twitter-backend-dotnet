@@ -5,7 +5,7 @@ namespace DotnetAPI.Dtos
     {
         
         [Required]
-        [EmailAddress(ErrorMessage = "Email không hợp lệ.")]    
+        [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
         public string? Email {get; set;}
         [Required]
         public string Password {get; set;}
