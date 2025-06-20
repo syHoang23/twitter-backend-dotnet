@@ -3,6 +3,7 @@ using DotnetAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DotnetAPI.Repository.Interfaces;
+using DotnetAPI.Dtos;
 
 namespace DotnetAPI.Controllers;
 
@@ -34,19 +35,29 @@ public class UserController : BaseApiController
         }
         return _userRepo.GetUserProfile(userId);
     }
-    [HttpPut("UpsertUser")]
-    public IActionResult UpsertUser(User user)
+    [HttpPut("UpdateUser")]
+    public IActionResult UpdateUser(UserForUpdateDto userForUpdate)
     {   
-        if (_userRepo.UpsertUser(user))
+        var userIdStr = this.User.FindFirst("userId")?.Value;
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+        {
+            throw new UnauthorizedAccessException("Invalid or missing user ID.");
+        }
+        if (_userRepo.UpdatetUser(userId, userForUpdate))
         {
             return Ok();
         }
 
         throw new Exception("Failed to Update User");
     }
-    [HttpDelete("DeleteUser/{userId}")]
-    public IActionResult DeleteUser(int userId)
+    [HttpDelete("DeleteUser")]
+    public IActionResult DeleteUser()
     {
+        var userIdStr = this.User.FindFirst("userId")?.Value;
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out int userId))
+        {
+            throw new UnauthorizedAccessException("Invalid or missing user ID.");
+        }
         if (_userRepo.DeleteUser(userId))
         {
             return Ok();
