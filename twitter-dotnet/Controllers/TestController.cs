@@ -17,6 +17,5 @@ namespace DotnetAPI.Controllers
         {
             return _postRepo.GetPosts(postId, userId, searchParam);
         }
-
     }
 }
