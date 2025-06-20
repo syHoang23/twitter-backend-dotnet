@@ -69,7 +69,7 @@ namespace DotnetAPI.Helpers
             string sqlCheckUserExists = "SELECT Email FROM TutorialAppSchema.Auth WHERE Email = @Email";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@Email", email, DbType.String);
-            return _dapper.LoadDataSingleWithParameters<string>(sqlCheckUserExists,parameters).Count()==0;
+            return _dapper.LoadDataSingleWithParameters<string>(sqlCheckUserExists, parameters) == null;
         }
     }
 }
