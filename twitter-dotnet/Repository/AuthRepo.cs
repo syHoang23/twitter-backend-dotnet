@@ -14,7 +14,7 @@ namespace DotnetAPI.Repository
     {
         private readonly DataContextDapper _dapper;
         private readonly AuthHelper _authHelper;
-        private readonly UserRepo _userRepo;
+        private readonly IUserRepo _userRepo;
         private readonly IMapper _mapper;
 
         public AuthRepo(IConfiguration config)
@@ -69,8 +69,8 @@ namespace DotnetAPI.Repository
             Console.WriteLine(Convert.ToBase64String(passwordHash));
 
             string sqlAddAuth = @"EXEC TutorialAppSchema.spRegistration_Upsert
-                @Email = @EmailParam, 
-                @PasswordHash = @PasswordHashParam, 
+                @Email = @EmailParam,
+                @PasswordHash = @PasswordHashParam,
                 @PasswordSalt = @PasswordSaltParam";
             
             DynamicParameters sqlParameters = new DynamicParameters();
@@ -89,8 +89,13 @@ namespace DotnetAPI.Repository
 
             sqlParameters.Add("@EmailParam", userForLogin.Email, DbType.String);
 
-            UserForLoginConfirmationDto userForConfirmation = _dapper
+            UserForLoginConfirmationDto? userForConfirmation = _dapper
                 .LoadDataSingleWithParameters<UserForLoginConfirmationDto>(sqlForHashAndSalt, sqlParameters);
+
+            if (userForConfirmation == null)
+            {
+                throw new UnauthorizedAccessException("Invalid email or password.");
+            }
 
             byte[] passwordHash = _authHelper.GetPasswordHash(userForLogin.Password, userForConfirmation.PasswordSalt);
 
