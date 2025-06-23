@@ -7,8 +7,6 @@ namespace DotnetAPI.Models
         public int? FollowerId { get; set; }
         public int? FollowingId { get; set; }
         public DateTime FollowedAt { get; set; }
-
-
         public Follow()
         {
             FollowId = null;
