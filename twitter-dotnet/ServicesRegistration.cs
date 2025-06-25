@@ -12,6 +12,7 @@ namespace DotnetAPI
             services.AddScoped<IPostRepo, PostRepo>();
             services.AddScoped<IUserRepo, UserRepo>();
             services.AddScoped<IAuthRepo, AuthRepo>();
+            services.AddScoped<IFollowRepo, FollowRepo>();
         }
     }
 }
