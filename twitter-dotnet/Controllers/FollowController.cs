@@ -50,7 +50,7 @@ namespace DotnetAPI.Controllers
             }
             throw new Exception("Failed to follow user!!");
         }
-        [HttpPut("UnFollowUser/{followingId}")]
+        [HttpDelete("UnFollowUser/{followingId}")]
         public IActionResult UnFollowUser(int followingId)
         {
             var userIdStr = this.User.FindFirst("userId")?.Value;
