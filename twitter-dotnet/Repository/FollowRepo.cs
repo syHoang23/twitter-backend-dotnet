@@ -24,7 +24,6 @@ namespace DotnetAPI.Repository
             DynamicParameters sqlParameters = new DynamicParameters();
             sqlParameters.Add("FollowerIdParam", followerId, DbType.Int32);
             sqlParameters.Add("FollowingIdParam", followingId, DbType.Int32);
-
             return _dapper.ExecuteSqlWithParameters(sql, sqlParameters);
         }
         public bool UnfollowUser(int followerId, int followingId)
